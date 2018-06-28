@@ -7,9 +7,9 @@ class App extends Component {
     super(props);
     this.state = {
       todos: [
-        { description: 'Walk the cat', isCompleted: true },
-        { description: 'Throw the dishes away', isCompleted: false },
-        { description: 'Buy new dishes', isCompleted: false }
+        { description: 'Walk the cat', isCompleted: true, isDeleted: false },
+        { description: 'Throw the dishes away', isCompleted: false, isDeleted: false },
+        { description: 'Buy new dishes', isCompleted: false, isDeleted: false }
       ],
       newTodoDescription: ''
     };
@@ -22,7 +22,7 @@ handleChange(e) {
 handleSubmit(e) {
   e.preventDefault();
   if (!this.state.newTodoDescription) { return }
-  const newTodo = { description: this.state.newTodoDescription, isCompleted: false };
+  const newTodo = { description: this.state.newTodoDescription, isCompleted: false, isDeleted: false };
   this.setState({ todos: [...this.state.todos, newTodo], newTodoDescription: '' });
 }
 
@@ -33,14 +33,26 @@ toggleComplete(index) {
   this.setState({ todos: todos });
 }
 
+deleteTodo(index) {
+  const todolist = this.state.todos.slice();
+  console.log(todolist);
+  const todoitem = todolist[index];
+  console.log(todoitem);
+  todoitem.isDeleted = todoitem.isDeleted ? false : true;
+  const newtodolist = todolist.filter(todo => todo.isDeleted === false);
+  this.setState({ todos: newtodolist });
+}
+
+
   render() {
     return (
       <div className="App">
-	<ul>
+        <ul>
           { this.state.todos.map( (todo, index) =>
-            <ToDo key={ index } description={ todo.description } isCompleted={ todo.isCompleted } toggleComplete={ () => this.toggleComplete(index) } />
+            <ToDo key={index} description={todo.description} isCompleted={todo.isCompleted} isDeleted={todo.isDeleted} toggleComplete={ () => this.toggleComplete(index) } deleteTodo={ () => 
+this.deleteTodo(index) } />
           )}
-	</ul>
+        </ul>
         <form onSubmit={ (e) => this.handleSubmit(e) }>
           <input type="text" value={ this.state.newTodoDescription } onChange={ (e) => this.handleChange(e) } />
           <input type="submit" />
@@ -51,3 +63,4 @@ toggleComplete(index) {
 }
 
 export default App;
+
